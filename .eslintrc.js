@@ -22,6 +22,8 @@ module.exports = {
       }
     ],
     //关闭组件命名规则
-    'vue/multi-word-component-names': 'off'
+    'vue/multi-word-component-names': 'off',
+    //关闭ts any部分类型判断
+    '@typescript-eslint/no-explicit-any': 'off'
   }
 }

@@ -1,19 +1,14 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
-  </div>
+  <div>phone</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'App',
+  name: '',
   components: {}
 })
 </script>
 
-<style lang="less" scoped>
-#app {
-}
-</style>
+<style lang="less" scoped></style>

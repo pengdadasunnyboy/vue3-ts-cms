@@ -82,29 +82,49 @@ class HYRequest {
   //   })
   // }
 
-  request(config: HYRequestConfig): void {
-    if (config.interceptors?.requestInterceptor) {
-      config = config.interceptors.requestInterceptor(config)
-    }
+  request<T>(config: HYRequestConfig<any>): Promise<T> {
+    return new Promise((resolve, reject) => {
+      if (config.interceptors?.requestInterceptor) {
+        config = config.interceptors.requestInterceptor(config)
+      }
 
-    if (config.showLoading === false) {
-      this.showLoading = config.showLoading
-    }
+      if (config.showLoading === false) {
+        this.showLoading = config.showLoading
+      }
 
-    this.instance
-      .request(config)
-      .then(res => {
-        if (config.interceptors?.responseInterceptor) {
-          res = config.interceptors.responseInterceptor(res)
-        }
-        console.log(res)
-        //将showLoading设置为true
-        this.showLoading = DEFAULT_LOADING
-      })
-      .catch(err => {
-        this.showLoading = DEFAULT_LOADING
-        return err
-      })
+      this.instance
+        .request<any, T>(config)
+        .then(res => {
+          //1 单个请求对数据的处理
+          if (config.interceptors?.responseInterceptor) {
+            res = config.interceptors.responseInterceptor(res)
+          }
+          //console.log(res)
+          //2 将showLoading设置为true, 这样不会影响下一个请求
+          this.showLoading = DEFAULT_LOADING
+
+          //3 将结果resolve返回回去
+          resolve(res)
+        })
+        .catch(err => {
+          this.showLoading = DEFAULT_LOADING
+          reject(err)
+          return err
+        })
+    })
+  }
+
+  get<T>(config: HYRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, method: 'GET' })
+  }
+  post<T>(config: HYRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, method: 'POST' })
+  }
+  delete<T>(config: HYRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, method: 'DELETE' })
+  }
+  patch<T>(config: HYRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, method: 'PATCH' })
   }
 }
 

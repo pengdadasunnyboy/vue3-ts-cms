@@ -3,6 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import { globalRegister } from './global'
+import 'normalize.css'
+import './assets/css/index.less'
 
 import './service'
 
@@ -19,11 +21,21 @@ app.mount('#app')
 // console.log(process.env.VUE_APP_BASE_URL)
 // console.log(process.env.VUE_APP_BASE_NAME)
 
-hyRequest.request({
-  url: '/home/multidata',
-  method: 'GET',
-  showLoading: true
-})
+interface DataType {
+  data: any
+  returnCode: string
+  success: boolean
+}
+
+hyRequest
+  .get<DataType>({
+    url: '/home/multidata',
+    method: 'GET',
+    showLoading: false
+  })
+  .then(res => {
+    console.log(res)
+  })
 
 // hyRequest.request({
 //   url: '/home/multidata',
